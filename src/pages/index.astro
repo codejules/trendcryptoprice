@@ -1,0 +1,29 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import TrendingCard from "@/components/TrendingCard.astro";
+import TrendingChart from "@/components/TrendingChart.astro";
+import LastUpdate from "@/components/LastUpdate.astro";
+import Title from "@/components/Title.astro";
+import { priceUpdater } from "@/services/priceUpdater";
+import { CoinData } from "@/types/crypto";
+
+const trendingCoins: CoinData[] = await priceUpdater.getPrices();
+const lastUpdateTime = priceUpdater.getLastUpdateTime();
+---
+
+<Layout title="Crypto Trends - Discover the latest cryptocurrency trends">
+  <Header />
+  <main class="container mx-auto px-4 pb-6">
+    <header>
+      <Title />
+    </header>
+    <section>
+      <TrendingChart />
+      <LastUpdate timestamp={lastUpdateTime} />
+    </section>
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {trendingCoins.map((coin) => <TrendingCard coin={coin} />)}
+    </section>
+  </main>
+</Layout>

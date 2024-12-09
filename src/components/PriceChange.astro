@@ -1,0 +1,14 @@
+---
+interface Props {
+  percentage: number;
+}
+
+const { percentage } = Astro.props;
+const isPositive = percentage >= 0;
+const formattedPercentage = Math.abs(percentage).toFixed(2);
+---
+
+<div class={`flex items-center ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
+  <span class="mr-1">{isPositive ? '↑' : '↓'}</span>
+  <span class="font-semibold">{formattedPercentage}%</span>
+</div>

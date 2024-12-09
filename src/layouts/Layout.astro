@@ -1,0 +1,73 @@
+---
+import DarkIcon from '@/components/DarkIcon.astro';
+import LightIcon from '@/components/LightIcon.astro';
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="description"
+      content="Discover the latest cryptocurrency trends. Check out the current prices and the coins in the market."
+    />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/ico" href="/favicon.ico" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-white dark:bg-gray-900 min-h-screen">
+    <div class="flex justify-center">
+      <button
+        id="theme-toggle"
+        class="fixed bottom-2 p-2 bg-zinc-200 dark:bg-zinc-900 text-black dark:text-white rounded-full"
+      >
+      <DarkIcon />
+      <LightIcon />
+
+      </button>
+
+    </div>
+    <slot />
+  </body>
+</html>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const html = document.documentElement;
+    const themeButton = document.getElementById("theme-toggle");
+    const lightIcon = document.getElementById("light-icon");
+    const darkIcon = document.getElementById("dark-icon");
+
+
+    // function to update the icon deppending the theme
+    const updateButtonIcon = () => {
+      const isDarkMode = html.classList.contains("dark");
+      if (isDarkMode) {
+        lightIcon.classList.add("hidden");
+        darkIcon.classList.remove("hidden");
+      } else {
+        darkIcon.classList.add("hidden");
+        lightIcon.classList.remove("hidden");
+      }
+    };
+
+    // update icon to load
+    updateButtonIcon();
+
+    const toggleTheme = () => {
+      const isDarkMode = html.classList.toggle("dark");
+      localStorage.theme = isDarkMode ? "dark" : "light";
+      updateButtonIcon(); 
+    };
+
+    if (themeButton) {
+      themeButton.addEventListener("click", toggleTheme);
+    }
+  });
+</script>

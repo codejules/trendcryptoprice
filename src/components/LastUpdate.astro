@@ -1,0 +1,40 @@
+---
+---
+
+<div id="current-time" class="text-sm text-gray-600 dark:text-gray-400 text-center mb-6">
+</div>
+
+<script>
+// get function the actual time en 24h format
+const getCurrentTime = (): string => {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+  const suffix = hours >= 12 ? 'PM' : 'AM';
+
+  return `Last Updated: ${now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}, ${hours}:${minutes}:${seconds} ${suffix} (updated every 4 hours)`;
+};
+
+// function to update time each minute
+const startUpdatingTime = () => {
+  const timeDisplayElement = document.getElementById('current-time');
+  
+  // function to update the time
+  const updateTime = () => {
+    if (timeDisplayElement) {
+      timeDisplayElement.textContent = getCurrentTime(); // show time in DOM
+    }
+  };
+  
+  // update time inmediatly
+  updateTime();
+
+  // update time each 4 hours (3,600,000 ms = 1 h)
+  setInterval(updateTime, 14400000 );
+};
+
+// init the updated time when the page loaded
+startUpdatingTime();
+
+</script>

@@ -1,0 +1,107 @@
+---
+
+---
+
+<div class="relative dark:border-gray-800">
+  <input
+    type="text"
+    id="cryptoSearch"
+    class="transition-all duration-400 w-full bg-white dark:bg-transparent border border-gray-300 dark:border-white/50 rounded-lg px-4 py-2 text-gray-600 dark:text-white placeholder-gray-400 dark:placeholder-white/70 focus:outline-none dark:focus:border-white"
+    placeholder="Search crypto market #rank..."
+  />
+  <div
+    id="searchResults"
+    class="absolute w-full mt-2 border border-gray-300 bg-white dark:bg-gray-900/95 rounded-lg hidden"
+  >
+  </div>
+</div>
+
+<script>
+  import { searchCryptos } from "@/services/crypto";
+  import { Coin } from "@/types/crypto";
+
+  const searchInput = document.getElementById(
+    "cryptoSearch",
+  ) as HTMLInputElement;
+  const searchResults = document.getElementById("searchResults");
+  let debounceTimer: number;
+
+  searchInput?.addEventListener("input", async (e) => {
+    const target = e.target as HTMLInputElement;
+    const query = target.value.trim();
+
+    clearTimeout(debounceTimer);
+
+    if (query.length < 2) {
+      searchResults?.classList.add("hidden");
+      return;
+    }
+
+    debounceTimer = setTimeout(async () => {
+      const results: Coin[] = await searchCryptos(query);
+
+      if (searchResults) {
+        searchResults.innerHTML = "";
+        searchResults.classList.remove("hidden");
+
+        if (results.length === 0) {
+          searchResults.innerHTML = `
+              <div class="px-4 py-3 text-gray-600 dark:text-white/70">
+                No cryptocurrencies found
+              </div>
+            `;
+          return;
+        }
+
+        results.forEach((coin: Coin) => {
+          const resultItem = document.createElement("div");
+          resultItem.className =
+            "flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition-colors";
+          resultItem.innerHTML = `
+              <img src="${coin.thumb}" alt="${coin.name}" class="w-8 h-8 rounded-full">
+              <div>
+                <div class="text-gray-600 dark:text-white font-medium">${coin.name}</div>
+                <div class="text-gray-600 dark:text-white/70 text-sm">${coin.symbol.toUpperCase()}</div>
+              </div>
+              ${
+                coin.market_cap_rank
+                  ? `
+                <div class="ml-auto text-gray-600 dark:text-white md:uppercase md:text-sm text-right">
+                  Market Rank #${coin.market_cap_rank}
+                </div>
+              `
+                  : ""
+              }
+            `;
+          searchResults.appendChild(resultItem);
+        });
+      }
+    }, 300);
+  });
+
+  // Close search results when clicking outside
+  document.addEventListener("click", (e) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest("#cryptoSearch") && !target.closest("#searchResults")) {
+      searchResults?.classList.add("hidden");
+      if (searchInput && searchInput.value.trim() !== "") {
+        searchInput.value = ""; // Clear input field if it has value
+      }
+    }
+  });
+
+  const searchMobile = document.getElementById("searchMobile");
+
+  document.addEventListener("scroll", async (e) => {
+    if (window.scrollY > 30) {
+      searchInput?.classList.remove("dark:bg-transparent");
+      searchInput?.classList.add("dark:bg-gray-700");
+      searchMobile?.classList.add("fixed")
+    } else if (window.scrollY === 0) {
+      searchInput?.classList.remove("dark:bg-gray-700");
+      searchMobile?.classList.remove("fixed")
+      searchMobile?.classList.add("transition-all", "duration-400");
+      searchInput?.classList.add("dark:bg-transparent");
+    }
+  });
+</script>
