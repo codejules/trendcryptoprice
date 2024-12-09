@@ -59,7 +59,7 @@ const formatCurrency = (value: number, currency: string) => {
     style: "currency",
     currency: currency,
     minimumFractionDigits: 2,
-    maximumFractionDigits: 6,
+    maximumFractionDigits: 8,
   }).format(value);
 };
 ---
@@ -95,9 +95,6 @@ const formatCurrency = (value: number, currency: string) => {
   <div class="mt-4 space-y-2">
     <div class="flex justify-between">
       <span class="text-gray-600 dark:text-gray-300">Price (BTC)</span>
-<!--       <span class="font-semibold text-gray-900 dark:text-white">
-        {formatBtcPrice(price_btc)} BTC</span
-      >  -->
       <span
         class="font-semibold text-gray-900 dark:text-white"
         set:html={btcFormatted + " BTC"}
