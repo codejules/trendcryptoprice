@@ -2,19 +2,19 @@
 import SearchBar from "./SearchBar.astro";
 ---
 
-<header class="text-white pt-4 pb-2 md:py-6 container mx-auto">
-  <nav class="flex flex-col md:flex-row md:justify-between items-center md:px-4">
+<header class="text-white py-6 container mx-auto">
+  <nav class="gap-4 md:gap-0 flex flex-col md:flex-row md:justify-between items-center md:px-4">
     <div class="flex gap-2 items-center">
       <img
-        class="md:w-7 w-14"
+        class="md:w-12 w-14"
         src="logo.png"
         alt="logo crypto trend prices, coins in real time"
         title="trends cryptocurrencies prices"
         aria-label="Logo crypto trending prices, show the lattest prices cryptos"
       />
-      <h3 class="font-mono">Crypto Trend Prices</h3>
+      <h3 class="font-mono text-black dark:text-white">Crypto Trend Prices</h3>
     </div>
-    <div id="searchMobile" class="z-10 w-full md:w-[600px] my-4 md:my-8 px-4 xl:fixed left-0 right-0 md:mx-auto">
+    <div id="searchMobile" class="z-10 w-full md:w-[600px] px-4 xl:fixed left-0 right-0 md:mx-auto">
       <SearchBar />
     </div>
   </nav>

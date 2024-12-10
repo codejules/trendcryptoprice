@@ -19,11 +19,11 @@ const lastUpdateTime = priceUpdater.getLastUpdateTime();
       <Title />
     </header>
     <section>
-      <TrendingChart />
-      <LastUpdate timestamp={lastUpdateTime} />
-    </section>
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {trendingCoins.map((coin) => <TrendingCard coin={coin} />)}
+      <!-- <TrendingChart /> -->
+        <LastUpdate timestamp={lastUpdateTime} />
+      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {trendingCoins.map((coin) => <TrendingCard coin={coin} />)}
+      </section>
     </section>
   </main>
 </Layout>
