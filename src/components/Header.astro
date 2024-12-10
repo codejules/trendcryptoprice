@@ -1,9 +1,5 @@
 ---
 import SearchBar from "./SearchBar.astro";
-
-const showText = Astro.request.url.includes(
-  "ipfs.io/ipfs/",
-);
 ---
 
 <header class="text-white py-6 container mx-auto">
@@ -26,26 +22,31 @@ const showText = Astro.request.url.includes(
     >
       <SearchBar />
     </div>
-    {
-      showText && (
-        <div class="flex items-center gap-2">
-          <img
-            class="w-6 md:w-8"
-            alt="buy domain trend crypto"
-            title="buy domain trend crypto"
-            aria-label="buy domain trend crypto unstoppable domains"
-            src="/unstoppable.svg"
-          />
-          <span class="font-mono text-xs text-black dark:text-white">
-            <a
-              href="mailto:trendcrypto.crypto
-@ud.me"
-            >
-              Buy this domain
-            </a>
-          </span>
-        </div>
-      )
-    }
+
+    <div id="buy-domain" class="hidden">
+      <div class="flex items-center gap-2">
+        <img
+          class="w-6 md:w-8"
+          alt="buy domain trend crypto"
+          title="buy domain trend crypto"
+          aria-label="buy domain trend crypto unstoppable domains"
+          src="/unstoppable.svg"
+        />
+        <span class="font-mono text-xs text-black dark:text-white">
+          <a href="mailto:trendcrypto.crypto
+@ud.me"> Buy this domain </a>
+        </span>
+      </div>
+    </div>
   </nav>
 </header>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const currentUrl = window.location.href;
+    if (currentUrl.includes("ipfs.io/ipfs/")) {
+      const contentDiv = document.getElementById("buy-domain");
+      contentDiv.classList.remove("hidden");
+    }
+  });
+</script>
