@@ -1,9 +1,15 @@
 ---
 import SearchBar from "./SearchBar.astro";
+
+const showText = Astro.request.url.includes(
+  "QmNSaypNpPkUhkDCvedVmHfrq6avy5DF9AnHviPG2JE49A",
+);
 ---
 
 <header class="text-white py-6 container mx-auto">
-  <nav class="gap-4 md:gap-0 flex flex-col md:flex-row md:justify-between items-center md:px-4">
+  <nav
+    class="gap-4 md:gap-0 flex flex-col md:flex-row md:justify-between items-center md:px-4"
+  >
     <div class="flex gap-2 items-center">
       <img
         class="md:w-12 w-14"
@@ -14,8 +20,32 @@ import SearchBar from "./SearchBar.astro";
       />
       <h3 class="font-mono text-black dark:text-white">Crypto Trend Prices</h3>
     </div>
-    <div id="searchMobile" class="z-10 w-full md:w-[600px] px-4 xl:fixed left-0 right-0 md:mx-auto">
+    <div
+      id="searchMobile"
+      class="z-10 w-full md:w-[600px] px-4 xl:fixed left-0 right-0 md:mx-auto"
+    >
       <SearchBar />
     </div>
+    {
+      showText && (
+        <div class="flex items-center gap-2">
+          <img
+            class="w-6 md:w-8"
+            alt="buy domain trend crypto"
+            title="buy domain trend crypto"
+            aria-label="buy domain trend crypto unstoppable domains"
+            src="/unstoppable.svg"
+          />
+          <span class="font-mono text-xs text-black dark:text-white">
+            <a
+              href="mailto:trendcrypto.crypto
+@ud.me"
+            >
+              Buy this domain
+            </a>
+          </span>
+        </div>
+      )
+    }
   </nav>
 </header>
