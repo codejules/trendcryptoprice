@@ -10,10 +10,12 @@ interface Props {
       thumb: string;
       price_btc: number;
       price_usd: number;
-      price_eur: number;
       price_change_percentage_24h: number;
       market_cap_rank: number | null;
       trending_position: number | null;
+      data: {
+        market_cap: string | null;
+      };
     };
   };
 }
@@ -25,13 +27,16 @@ const {
   thumb,
   price_btc,
   price_usd,
-  price_eur,
   price_change_percentage_24h,
   trending_position,
 } = coin.item;
 
 // Generalized price formatter
-const formatPrice = (price: number, decimals: number = 4, subLength: number = 2): string => {
+const formatPrice = (
+  price: number,
+  decimals: number = 4,
+  subLength: number = 2,
+): string => {
   if (typeof price !== "number" || isNaN(price)) {
     console.warn("Invalid price value");
     return "0";
@@ -50,7 +55,7 @@ const formatPrice = (price: number, decimals: number = 4, subLength: number = 2)
 
 const btcFormatted = formatPrice(price_btc);
 const usdFormatted = "$" + formatPrice(price_usd, 2, 4);
-const eurFormatted = "€" + formatPrice(price_eur, 2, 4);
+const marketCap = coin.item.data.market_cap.replace(",", ".")
 ---
 
 <article
@@ -66,11 +71,13 @@ const eurFormatted = "€" + formatPrice(price_eur, 2, 4);
           title={`trending coin ${name}`}
           class="w-12 h-12 rounded-full"
         />
-        {trending_position && (
-          <div class="absolute -top-2 -right-2 bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center md:text-[10px] text-[12px] font-bold">
-            #{trending_position}
-          </div>
-        )}
+        {
+          trending_position && (
+            <div class="absolute -top-2 -right-2 bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center md:text-[10px] text-[12px] font-bold">
+              #{trending_position}
+            </div>
+          )
+        }
       </div>
       <div>
         <h1 class="text-xl font-bold text-gray-900 dark:text-white">{name}</h1>
@@ -81,25 +88,24 @@ const eurFormatted = "€" + formatPrice(price_eur, 2, 4);
   </div>
   <div class="mt-4 space-y-2">
     <div class="flex justify-between">
-      <span class="text-gray-600 dark:text-gray-300">Price (BTC)</span>
+      <span class="text-gray-600 dark:text-gray-300">Price ₿</span>
       <span
         class="font-semibold text-gray-900 dark:text-white"
         set:html={btcFormatted + " BTC"}
       />
     </div>
     <div class="flex justify-between">
-      <span class="text-gray-600 dark:text-gray-300">Price (USD)</span>
+      <span class="text-gray-600 dark:text-gray-300">Price $</span>
       <span
         class="font-semibold text-gray-900 dark:text-white"
         set:html={usdFormatted}
       />
     </div>
     <div class="flex justify-between">
-      <span class="text-gray-600 dark:text-gray-300">Price (EUR)</span>
-      <span
-        class="font-semibold text-gray-900 dark:text-white"
-        set:html={eurFormatted}
-      />
+      <span class="text-gray-600 dark:text-gray-300">Market Cap $</span>
+      <span class="font-semibold text-gray-900 dark:text-white">
+        {marketCap}
+      </span>
     </div>
   </div>
 </article>
