@@ -3,7 +3,11 @@
 ---
 
 <div class="w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-  <canvas id="trendingChart" class="w-full h-64" aria-label="Chart displaying the latest cryptocurrency price trends"></canvas>
+  <canvas
+    id="trendingChart"
+    class="w-full h-64"
+    aria-label="Chart displaying the latest cryptocurrency price trends"
+  ></canvas>
 </div>
 
 <script>
@@ -11,14 +15,18 @@
 
   type HistoricalDataPoint = [number, number]; // [timestamp, price].
 
-  async function fetchHistoricalData(coinId: string): Promise<HistoricalDataPoint[]> {
+  async function fetchHistoricalData(
+    coinId: string,
+  ): Promise<HistoricalDataPoint[]> {
     try {
       const response = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7&interval=daily`
+        `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=7&interval=daily`,
       );
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch historical data: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch historical data: ${response.statusText}`,
+        );
       }
 
       const data = await response.json();
@@ -31,89 +39,105 @@
 
   async function initChart() {
     try {
-      const response = await fetch("https://api.coingecko.com/api/v3/search/trending");
+      const response = await fetch(
+        "https://api.coingecko.com/api/v3/search/trending",
+      );
       const data = await response.json();
       const topCoin = data.coins[0].item;
 
       const historicalData = await fetchHistoricalData(topCoin.id);
       const labels = historicalData.map((item) =>
-        new Date(item[0]).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+        new Date(item[0]).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
       );
       const prices = historicalData.map((item) => item[1]);
-      const canvas = document.getElementById("trendingChart") as HTMLCanvasElement;
-      const ctx = canvas.getContext("2d");
+      const canvas = document.getElementById("trendingChart");
 
-      if (!ctx) return;
+      if (canvas instanceof HTMLCanvasElement) {
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
 
-      const createChart = (theme: "light" | "dark") => {
-        const textColor = theme === "dark" ? "#fff" : "#000";
-        return new Chart(ctx, {
-          type: "line",
-          data: {
-            labels,
-            datasets: [
-              {
-                label: `${topCoin.name} Price (USD)`,
-                data: prices,
-                borderColor: "#8b5cf6",
-                backgroundColor: "rgba(139, 92, 246, 0.1)",
-                borderWidth: 2,
-                fill: true,
-                tension: 0.4,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: "top",
-                labels: {
-                  color: textColor,
+        const createChart = (theme: "light" | "dark") => {
+          const textColor = theme === "dark" ? "#fff" : "#000";
+          return new Chart(ctx, {
+            type: "line",
+            data: {
+              labels,
+              datasets: [
+                {
+                  label: `${topCoin.name} Price (USD)`,
+                  data: prices,
+                  borderColor: "#8b5cf6",
+                  backgroundColor: "rgba(139, 92, 246, 0.1)",
+                  borderWidth: 2,
+                  fill: true,
+                  tension: 0.4,
                 },
-              },
+              ],
             },
-            scales: {
-              x: {
-                grid: {
-                  display: false,
-                },
-                ticks: {
-                  color: textColor,
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: "top",
+                  labels: {
+                    color: textColor,
+                  },
                 },
               },
-              y: {
-                grid: {
-                  color: "rgba(156, 163, 175, 0.1)",
+              scales: {
+                x: {
+                  grid: {
+                    display: false,
+                  },
+                  ticks: {
+                    color: textColor,
+                  },
                 },
-                ticks: {
-                  color: textColor,
-                  callback: function (value) {
-                    return "$" + value.toLocaleString();
+                y: {
+                  grid: {
+                    color: "rgba(156, 163, 175, 0.1)",
+                  },
+                  ticks: {
+                    color: textColor,
+                    callback: function (value) {
+                      return "$" + value.toLocaleString();
+                    },
                   },
                 },
               },
             },
-          },
+          });
+        };
+
+        // create initial graphic
+        let currentTheme: "dark" | "light" =
+          document.documentElement.classList.contains("dark")
+            ? "dark"
+            : "light";
+        let chart = createChart(currentTheme);
+
+        // change observer on theme
+        const observer = new MutationObserver(() => {
+          const newTheme: "dark" | "light" =
+            document.documentElement.classList.contains("dark")
+              ? "dark"
+              : "light";
+          if (newTheme !== currentTheme) {
+            currentTheme = newTheme;
+            chart.destroy(); // destroy the last graphic
+            chart = createChart(currentTheme); // create new graphic with the new colors
+          }
         });
-      };
 
-      // create initial graphic
-      let currentTheme: "dark" | "light" = document.documentElement.classList.contains("dark") ? "dark" : "light";
-      let chart = createChart(currentTheme);
-
-      // change observer on theme
-      const observer = new MutationObserver(() => {
-        const newTheme: "dark" | "light" = document.documentElement.classList.contains("dark") ? "dark" : "light";
-        if (newTheme !== currentTheme) {
-          currentTheme = newTheme;
-          chart.destroy(); // destroy the last graphic
-          chart = createChart(currentTheme); // create new graphic with the new colors
-        }
-      });
-
-      observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+        observer.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ["class"],
+        });
+      }
     } catch (error) {
       console.error("Error initializing chart:", error);
     }
@@ -121,4 +145,3 @@
 
   document.addEventListener("DOMContentLoaded", initChart);
 </script>
-
