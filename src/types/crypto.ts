@@ -11,6 +11,9 @@ export interface CoinData {
       market_cap_rank: number | null;
       trending_position: number | null;
       last_updated: number;
+      data: {
+        market_cap: string | null;
+      };
     };
   }
   
